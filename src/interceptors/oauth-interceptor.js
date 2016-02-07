@@ -26,10 +26,10 @@ function oauthInterceptor($q, $rootScope, OAuthToken) {
         $rootScope.$emit('oauth:error', rejection);
       }
 
-      // Catch `invalid_token` and `unauthorized` errors.
-      // The token isn't removed here so it can be refreshed when the `invalid_token` error occurs.
+      // Catch `invalid_grant` and `unauthorized` errors.
+      // The token isn't removed here so it can be refreshed when the `invalid_grant` error occurs.
       if (401 === rejection.status &&
-        (rejection.data && 'invalid_token' === rejection.data.error) ||
+        (rejection.data && 'invalid_grant' === rejection.data.error) ||
         (rejection.headers('www-authenticate') && 0 === rejection.headers('www-authenticate').indexOf('Bearer'))
       ) {
         $rootScope.$emit('oauth:error', rejection);

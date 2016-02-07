@@ -10,15 +10,13 @@ var defaults = {
   baseUrl: null,
   clientId: null,
   clientSecret: null,
-  grantPath: '/oauth2/token',
-  revokePath: '/oauth2/revoke'
+  grantPath: '/oauth2/token'
 };
 
 var requiredKeys = [
   'baseUrl',
   'clientId',
-  'grantPath',
-  'revokePath'
+  'grantPath'
 ];
 
 /**
@@ -63,11 +61,6 @@ function OAuthProvider() {
     // Add `grantPath` facing slash.
     if('/' !== config.grantPath[0]) {
       config.grantPath = `/${config.grantPath}`;
-    }
-
-    // Add `revokePath` facing slash.
-    if('/' !== config.revokePath[0]) {
-      config.revokePath = `/${config.revokePath}`;
     }
 
     return config;
@@ -177,23 +170,12 @@ function OAuthProvider() {
        * Revokes the `token` and removes the stored `token` from cookies
        * using the `OAuthToken`.
        *
-       * @return {promise} A response promise.
+       * @return {boolean}
        */
 
       revokeToken() {
-        var data = queryString.stringify({
-          token: OAuthToken.getRefreshToken() ? OAuthToken.getRefreshToken() : OAuthToken.getAccessToken()
-        });
-
-        var options = {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        };
-
-        return $http.post(`${config.baseUrl}${config.revokePath}`, data, options).then((response) => {
-          OAuthToken.removeToken();
-
-          return response;
-        });
+        OAuthToken.removeToken();
+        return true;
       }
     }
 
