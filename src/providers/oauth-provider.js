@@ -101,7 +101,7 @@ function OAuthProvider() {
        * using the `OAuthToken`.
        *
        * @param {object} user - Object with `username` and `password` properties.
-       * @param {object} config - Optional configuration object sent to `POST`.
+       * @param {object} config - Optional configuration object.
        * @return {promise} A response promise.
        */
 
@@ -124,11 +124,18 @@ function OAuthProvider() {
 
         data = queryString.stringify(data);
 
-        options = angular.extend({
+        var requestOptions = {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        }, options);
+        };
 
-        return $http.post(`${config.baseUrl}${config.grantPath}`, data, options).then((response) => {
+        var requestPath = `${config.baseUrl}${config.grantPath}`;
+
+        if(typeof(options.provider) !== 'undefined') {
+          
+          requestPath = requestPath + '/' + options.provider;
+        }
+
+        return $http.post(requestPath, data, requestOptions).then((response) => {
           OAuthToken.setToken(response.data);
 
           return response;
@@ -166,6 +173,7 @@ function OAuthProvider() {
         });
       }
 
+
       /**
        * Revokes the `token` and removes the stored `token` from cookies
        * using the `OAuthToken`.
@@ -174,8 +182,7 @@ function OAuthProvider() {
        */
 
       revokeToken() {
-        OAuthToken.removeToken();
-        return true;
+        return OAuthToken.removeToken();
       }
     }
 
