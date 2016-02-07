@@ -55,8 +55,8 @@ angular.module('myApp', ['angular-oauth2'])
         return;
       }
 
-      // Refresh token when a `invalid_token` error occurs.
-      if ('invalid_token' === rejection.data.error) {
+      // Refresh token when a `invalid_grant` error occurs.
+      if ('invalid_grant' === rejection.data.error) {
         return OAuth.getRefreshToken();
       }
 
@@ -77,8 +77,7 @@ OAuthProvider.configure({
   baseUrl: null,
   clientId: null,
   clientSecret: null,
-  grantPath: '/oauth2/token',
-  revokePath: '/oauth2/revoke'
+  grantPath: '/oauth2/token'
 });
 ```
 
@@ -105,7 +104,7 @@ Get an access token:
  * using the `OAuthToken`.
  *
  * @param {object} user - Object with `username` and `password` properties.
- * @param {object} config - Optional configuration object sent to `POST`.
+ * @param {object} config - Optional configuration object `{ provider: 'facebook' }` appends /facebook to the grantPath.
  * @return {promise} A response promise.
  */
 
@@ -142,7 +141,6 @@ OAuth.revokeToken()
 
 * `{ status: 400, data: { error: 'invalid_request' }`
 * `{ status: 400, data: { error: 'invalid_grant' }`
-* `{ status: 401, data: { error: 'invalid_token' }`
 * `{ status: 401, headers: { 'www-authenticate': 'Bearer realm="example"' } }`
 
 #### OAuthTokenProvider
@@ -169,7 +167,7 @@ Please check the [OAuthToken](https://github.com/seegno/angular-oauth2/blob/mast
 
 #### Contribute
 
-Found a bug or want to suggest something? Take a look first on the current and closed [issues](https://github.com/seegno/angular-oauth2/issues). If it is something new, please [submit an issue](https://github.com/seegno/angular-oauth2/issues/new).
+Found a bug or want to suggest something? Take a look first on the current and closed [issues](https://github.com/MHaendel/angular-oauth2/issues). If it is something new, please [submit an issue](https://github.com/MHaendel/angular-oauth2/issues/new).
 
 #### Develop
 
