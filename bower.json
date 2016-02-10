@@ -1,6 +1,6 @@
 {
-  "name": "angular-oauth2draft22",
-  "version": "3.0.6",
+  "name": "angular-oauth2",
+  "version": "3.0.7",
   "description": "AngularJS OAuth2 Draft 22 | Works with FOSOAuthServer",
   "main": "./dist/angular-oauth2.js",
   "authors": [

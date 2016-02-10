@@ -18,12 +18,12 @@ function oauthInterceptor($q, $rootScope, OAuthToken) {
     },
     responseError: function(rejection) {
       // Catch `invalid_request` and `invalid_grant` errors and ensure that the `token` is removed.
-      if (400 === rejection.status && rejection.data &&
-        ('invalid_grant' === rejection.data.error) ||
-        ('invalid_request' === rejection.data.error)
+      if (400 === rejection.status &&
+        (rejection.data && 'invalid_grant' === rejection.data.error) ||
+        (rejection.data && 'invalid_request' === rejection.data.error) ||
+        (rejection.headers('www-authenticate') && 0 === rejection.headers('www-authenticate').indexOf('Bearer'))
       ) {
         OAuthToken.removeToken();
-
         $rootScope.$emit('oauth:error', rejection);
       }
 
