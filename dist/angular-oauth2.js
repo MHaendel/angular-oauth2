@@ -1,6 +1,6 @@
 /**
- * angular-oauth2 - Angular OAuth2
- * @version v3.0.4
+ * angular-oauth2draft22 - Angular OAuth2
+ * @version v3.0.6
  * @link https://github.com/MHaendel/angular-oauth2
  * @license MIT
  */
@@ -24,7 +24,7 @@
                 return config;
             },
             responseError: function(rejection) {
-                if (400 === rejection.status && rejection.data && ("invalid_request" === rejection.data.error || "invalid_grant" === rejection.data.error)) {
+                if (400 === rejection.status && rejection.data && "invalid_grant" === rejection.data.error || "invalid_request" === rejection.data.error) {
                     OAuthToken.removeToken();
                     $rootScope.$emit("oauth:error", rejection);
                 }

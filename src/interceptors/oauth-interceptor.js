@@ -19,7 +19,8 @@ function oauthInterceptor($q, $rootScope, OAuthToken) {
     responseError: function(rejection) {
       // Catch `invalid_request` and `invalid_grant` errors and ensure that the `token` is removed.
       if (400 === rejection.status && rejection.data &&
-        ('invalid_request' === rejection.data.error || 'invalid_grant' === rejection.data.error)
+        ('invalid_grant' === rejection.data.error) ||
+        ('invalid_request' === rejection.data.error)
       ) {
         OAuthToken.removeToken();
 
