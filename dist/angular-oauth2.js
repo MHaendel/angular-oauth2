@@ -1,6 +1,6 @@
 /**
- * angular-oauth2draft22 - Angular OAuth2
- * @version v3.0.6
+ * angular-oauth2 - Angular OAuth2
+ * @version v3.0.7
  * @link https://github.com/MHaendel/angular-oauth2
  * @license MIT
  */
@@ -14,28 +14,6 @@
     }
 })(this, function(angular, queryString) {
     var ngModule = angular.module("angular-oauth2", [ "ngCookies" ]).config(oauthConfig).factory("oauthInterceptor", oauthInterceptor).provider("OAuth", OAuthProvider).provider("OAuthToken", OAuthTokenProvider);
-    function oauthInterceptor($q, $rootScope, OAuthToken) {
-        return {
-            request: function(config) {
-                if (OAuthToken.getAuthorizationHeader()) {
-                    config.headers = config.headers || {};
-                    config.headers.Authorization = OAuthToken.getAuthorizationHeader();
-                }
-                return config;
-            },
-            responseError: function(rejection) {
-                if (400 === rejection.status && rejection.data && "invalid_grant" === rejection.data.error || "invalid_request" === rejection.data.error) {
-                    OAuthToken.removeToken();
-                    $rootScope.$emit("oauth:error", rejection);
-                }
-                if (401 === rejection.status && (rejection.data && "invalid_grant" === rejection.data.error) || rejection.data && "access_denied" === rejection.data.error || rejection.headers("www-authenticate") && 0 === rejection.headers("www-authenticate").indexOf("Bearer")) {
-                    $rootScope.$emit("oauth:error", rejection);
-                }
-                return $q.reject(rejection);
-            }
-        };
-    }
-    oauthInterceptor.$inject = [ "$q", "$rootScope", "OAuthToken" ];
     function oauthConfig($httpProvider) {
         $httpProvider.interceptors.push("oauthInterceptor");
     }
@@ -168,8 +146,10 @@
         if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
     };
     function OAuthTokenProvider() {
+        var storage;
         var config = {
             name: "token",
+            storage: "localstorage",
             options: {
                 secure: true
             }
@@ -181,29 +161,23 @@
             angular.extend(config, params);
             return config;
         };
-        this.$get = function($cookies) {
+        this.$get = function(ipCookie) {
             var OAuthToken = function() {
                 function OAuthToken() {}
                 _prototypeProperties(OAuthToken, null, {
-                    setToken: {
-                        value: function setToken(data) {
-                            return $cookies.putObject(config.name, data, config.options);
+                    token: {
+                        set: function(data) {
+                            return setToken(data);
                         },
-                        writable: true,
-                        enumerable: true,
-                        configurable: true
-                    },
-                    getToken: {
-                        value: function getToken() {
-                            return $cookies.getObject(config.name);
+                        get: function() {
+                            return getToken();
                         },
-                        writable: true,
                         enumerable: true,
                         configurable: true
                     },
                     getAccessToken: {
                         value: function getAccessToken() {
-                            return this.getToken() ? this.getToken().access_token : undefined;
+                            return this.token ? this.token.access_token : undefined;
                         },
                         writable: true,
                         enumerable: true,
@@ -222,7 +196,7 @@
                     },
                     getRefreshToken: {
                         value: function getRefreshToken() {
-                            return this.getToken() ? this.getToken().refresh_token : undefined;
+                            return this.token ? this.token.refresh_token : undefined;
                         },
                         writable: true,
                         enumerable: true,
@@ -230,16 +204,24 @@
                     },
                     getTokenType: {
                         value: function getTokenType() {
-                            return this.getToken() ? this.getToken().token_type : undefined;
+                            return this.token ? this.token.token_type : undefined;
                         },
                         writable: true,
                         enumerable: true,
                         configurable: true
                     },
                     removeToken: {
-                        value: function removeToken() {
-                            return $cookies.remove(config.name, config.options);
-                        },
+                        value: function(_removeToken) {
+                            var _removeTokenWrapper = function removeToken() {
+                                return _removeToken.apply(this, arguments);
+                            };
+                            _removeTokenWrapper.toString = function() {
+                                return _removeToken.toString();
+                            };
+                            return _removeTokenWrapper;
+                        }(function() {
+                            return removeToken();
+                        }),
                         writable: true,
                         enumerable: true,
                         configurable: true
@@ -247,9 +229,79 @@
                 });
                 return OAuthToken;
             }();
+            var setToken = function(data) {
+                storage = config.storage.toLowerCase();
+                switch (storage) {
+                  case "cookies":
+                    return ipCookie(config.name, data, config.options);
+
+                  case "localstorage":
+                    return localStorage.setItem(config.name, JSON.stringify(data));
+
+                  case "sessionstorage":
+                    return sessionStorage.setItem(config.name, JSON.stringify(data));
+
+                  default:
+                    return ipCookie(config.name, data, config.options);
+                }
+            };
+            var getToken = function() {
+                storage = config.storage.toLowerCase();
+                switch (storage) {
+                  case "cookies":
+                    return ipCookie(config.name);
+
+                  case "localstorage":
+                    return JSON.parse(localStorage.getItem(config.name));
+
+                  case "sessionstorage":
+                    return JSON.parse(sessionStorage.getItem(config.name));
+
+                  default:
+                    return ipCookie(config.name);
+                }
+            };
+            var removeToken = function() {
+                storage = config.storage.toLowerCase();
+                switch (storage) {
+                  case "cookies":
+                    return ipCookie.remove(config.name, config.options);
+
+                  case "localstorage":
+                    return localStorage.removeItem(config.name);
+
+                  case "sessionstorage":
+                    return sessionStorage.removeItem(config.name);
+
+                  default:
+                    return ipCookie.remove(config.name, config.options);
+                }
+            };
             return new OAuthToken();
         };
-        this.$get.$inject = [ "$cookies" ];
+        this.$get.$inject = [ "ipCookie" ];
     }
+    function oauthInterceptor($q, $rootScope, OAuthToken) {
+        return {
+            request: function(config) {
+                if (OAuthToken.getAuthorizationHeader()) {
+                    config.headers = config.headers || {};
+                    config.headers.Authorization = OAuthToken.getAuthorizationHeader();
+                }
+                return config;
+            },
+            responseError: function(rejection) {
+                if (400 === rejection.status && (rejection.data && "invalid_grant" === rejection.data.error) || rejection.data && "invalid_request" === rejection.data.error || rejection.headers("www-authenticate") && 0 === rejection.headers("www-authenticate").indexOf("Bearer")) {
+                    OAuthToken.removeToken();
+                    $rootScope.$emit("oauth:error", rejection);
+                }
+                if (401 === rejection.status && (rejection.data && "invalid_grant" === rejection.data.error) || rejection.data && "access_denied" === rejection.data.error || rejection.headers("www-authenticate") && 0 === rejection.headers("www-authenticate").indexOf("Bearer")) {
+                    $rootScope.$emit("oauth:error", rejection);
+                }
+                return $q.reject(rejection);
+            }
+        };
+    }
+    oauthInterceptor.$inject = [ "$q", "$rootScope", "OAuthToken" ];
     return ngModule;
 });
