@@ -10,10 +10,8 @@ import angular from 'angular';
  */
 
 function OAuthTokenProvider() {
-  var storage;
   var config = {
     name: 'token',
-    storage: 'localstorage',//cookies,localStorage,sessionStorage
     options: {
       secure: true
     }
@@ -39,27 +37,25 @@ function OAuthTokenProvider() {
 
   /**
    * OAuthToken service.
-   *
-   * @ngInject
    */
 
-  this.$get = function(ipCookie) {
+  this.$get = function() {
     class OAuthToken {
 
       /**
        * Set token.
        */
 
-      set token(data) {
-        return setToken(data);
+      setToken(data) {
+        return window.localStorage.setItem(config.name,JSON.stringify(data));
       }
 
       /**
        * Get token.
        */
 
-      get token() {
-        return getToken();
+      getToken() {
+        return JSON.parse(window.localStorage.getItem(config.name));
       }
 
       /**
@@ -67,7 +63,7 @@ function OAuthTokenProvider() {
        */
 
       getAccessToken() {
-        return this.token ? this.token.access_token : undefined;
+        return this.getToken() ? this.getToken().access_token : undefined;
       }
 
       /**
@@ -87,7 +83,7 @@ function OAuthTokenProvider() {
        */
 
       getRefreshToken() {
-        return this.token ? this.token.refresh_token : undefined;
+        return this.getToken() ? this.getToken().refresh_token : undefined;
       }
 
       /**
@@ -95,7 +91,7 @@ function OAuthTokenProvider() {
        */
 
       getTokenType() {
-        return this.token ? this.token.token_type : undefined;
+        return this.getToken() ? this.getToken().token_type : undefined;
       }
 
       /**
@@ -103,70 +99,9 @@ function OAuthTokenProvider() {
        */
 
       removeToken() {
-        return removeToken();
+        return window.localStorage.removeItem(config.name);
       }
-
     }
-
-    /**
-     * setToken
-     *
-     * @param data
-     * @returns {*}
-     */
-    var setToken = function(data) {
-     storage = config.storage.toLowerCase();
-      switch (storage) {
-       case 'cookies':
-        return ipCookie(config.name, data, config.options);
-       case 'localstorage':
-        return window.localStorage.setItem(config.name,JSON.stringify(data));
-       case 'sessionstorage':
-        return window.sessionStorage.setItem(config.name,JSON.stringify(data));
-       default :
-        return ipCookie(config.name, data, config.options);
-      }
-    };
-
-    /**
-     * getToken
-     *
-     * @returns {*}
-     */
-    var getToken = function() {
-     storage = config.storage.toLowerCase();
-      switch (storage) {
-       case 'cookies':
-        return ipCookie(config.name);
-       case 'localstorage':
-        return JSON.parse(window.localStorage.getItem(config.name));
-       case 'sessionstorage':
-        return JSON.parse(window.sessionStorage.getItem(config.name));
-       default :
-        return ipCookie(config.name);
-
-      }
-    };
-
-    /**
-     * removeToken
-     *
-     * @returns {*}
-     */
-    var removeToken = function() {
-     storage = config.storage.toLowerCase();
-      switch (storage) {
-       case 'cookies':
-        return ipCookie.remove(config.name, config.options);
-          case 'localstorage':
-            return window.localStorage.removeItem(config.name);
-          case 'sessionstorage':
-            return window.sessionStorage.removeItem(config.name);
-          default :
-            return ipCookie.remove(config.name, config.options);
-
-      }
-    };
 
     return new OAuthToken();
   };
