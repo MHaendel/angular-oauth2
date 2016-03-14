@@ -1,6 +1,6 @@
 {
   "name": "angular-oauth2",
-  "version": "3.0.8",
+  "version": "3.0.9",
   "description": "Angular OAuth2",
   "main": "./dist/angular-oauth2.js",
   "repository": {

@@ -120,9 +120,9 @@ function OAuthTokenProvider() {
        case 'cookies':
         return ipCookie(config.name, data, config.options);
        case 'localstorage':
-        return localStorage.setItem(config.name,JSON.stringify(data));
+        return window.localStorage.setItem(config.name,JSON.stringify(data));
        case 'sessionstorage':
-        return sessionStorage.setItem(config.name,JSON.stringify(data));
+        return window.sessionStorage.setItem(config.name,JSON.stringify(data));
        default :
         return ipCookie(config.name, data, config.options);
       }
@@ -139,9 +139,9 @@ function OAuthTokenProvider() {
        case 'cookies':
         return ipCookie(config.name);
        case 'localstorage':
-        return JSON.parse(localStorage.getItem(config.name));
+        return JSON.parse(window.localStorage.getItem(config.name));
        case 'sessionstorage':
-        return JSON.parse(sessionStorage.getItem(config.name));
+        return JSON.parse(window.sessionStorage.getItem(config.name));
        default :
         return ipCookie(config.name);
 
@@ -159,9 +159,9 @@ function OAuthTokenProvider() {
        case 'cookies':
         return ipCookie.remove(config.name, config.options);
           case 'localstorage':
-            return localStorage.removeItem(config.name);
+            return window.localStorage.removeItem(config.name);
           case 'sessionstorage':
-            return sessionStorage.removeItem(config.name);
+            return window.sessionStorage.removeItem(config.name);
           default :
             return ipCookie.remove(config.name, config.options);
 
