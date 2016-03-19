@@ -1,10 +1,10 @@
 {
   "name": "angular-oauth2",
-  "version": "3.0.11",
+  "version": "3.0.12",
   "description": "AngularJS OAuth2 Draft 22 | Works with FOSOAuthServer",
   "main": "./dist/angular-oauth2.js",
   "authors": [
-    "Seegno <projects@seegno.com>"
+    "MHaendel <not@public.com>"
   ],
   "keywords": [
     "AngularJS",
@@ -24,7 +24,6 @@
   ],
   "dependencies": {
     "angular": "^1.4.0",
-    "angular-cookies": "^1.4.0",
     "query-string": "^1.0.0"
   }
 }

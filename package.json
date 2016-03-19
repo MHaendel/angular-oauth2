@@ -1,6 +1,6 @@
 {
   "name": "angular-oauth2",
-  "version": "3.0.11",
+  "version": "3.0.12",
   "description": "Angular OAuth2",
   "main": "./dist/angular-oauth2.js",
   "repository": {
@@ -13,8 +13,8 @@
     "OAuth2"
   ],
   "author": {
-    "name": "Seegno",
-    "email": "projects@seegno.com"
+    "name": "MHaendel",
+    "email": "not@public.com"
   },
   "license": "MIT",
   "bugs": {
