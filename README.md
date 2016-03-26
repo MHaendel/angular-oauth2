@@ -10,7 +10,7 @@ Choose your preferred method:
 
 * Bower: `bower install angular-oauth2draft22`
 * NPM: `npm install --save angular-oauth2draft22`
-* Download: [angular-oauth2](https://raw.github.com/MHaendel-oauth2/master/dist/angular-oauth2.min.js)
+* Download: [angular-oauth2](https://raw.github.com/MHaendel/angular-oauth2/master/dist/angular-oauth2.min.js)
 
 ## Usage
 
