@@ -86,7 +86,7 @@ Check authentication status:
 ```js
 /**
  * Verifies if the `user` is authenticated or not based on the `token`
- * cookie.
+ * window.localStorage object.
  *
  * @return {boolean}
  */
