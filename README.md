@@ -10,14 +10,13 @@ Choose your preferred method:
 
 * Bower: `bower install angular-oauth2draft22`
 * NPM: `npm install --save angular-oauth2draft22`
-* Download: [angular-oauth2](https://raw.github.com/seegno/MHaendel-oauth2/master/dist/angular-oauth2.min.js)
+* Download: [angular-oauth2](https://raw.github.com/MHaendel-oauth2/master/dist/angular-oauth2.min.js)
 
 ## Usage
 
 ###### 1. Download `angular-oauth2` dependencies.
 
 * [angular](https://github.com/angular/angular.js)
-* [angular-cookies](https://github.com/angular/bower-angular-cookies)
 * [query-string](https://github.com/sindresorhus/query-string)
 
 If you're using `bower` they will be automatically downloaded upon installing this library.
@@ -26,7 +25,6 @@ If you're using `bower` they will be automatically downloaded upon installing th
 
 ```html
 <script src="<VENDOR_FOLDER>/angular/angular.min.js"></script>
-<script src="<VENDOR_FOLDER>/angular-cookies/angular-cookies.min.js"></script>
 <script src="<VENDOR_FOLDER>/query-string/query-string.min.js"></script>
 <script src="<VENDOR_FOLDER>/angular-oauth2/dist/angular-oauth2.min.js"></script>
 ```
@@ -100,7 +98,7 @@ Get an access token:
 
 ```js
 /**
- * Retrieves the `access_token` and stores the `response.data` on cookies
+ * Retrieves the `access_token` and stores the `response.data` on window.localStorage
  * using the `OAuthToken`.
  *
  * @param {object} user - Object with `username` and `password` properties.
@@ -115,7 +113,7 @@ Refresh access token:
 
 ```js
 /**
- * Retrieves the `refresh_token` and stores the `response.data` on cookies
+ * Retrieves the `refresh_token` and stores the `response.data` on window.localStorage
  * using the `OAuthToken`.
  *
  * @return {promise} A response promise.
@@ -128,7 +126,7 @@ Revoke access token:
 
 ```js
 /**
- * Revokes the `token` and removes the stored `token` from cookies
+ * Revokes the `token` and removes the stored `token` from window.localStorage
  * using the `OAuthToken`.
  *
  * @return {promise} A response promise.
@@ -145,7 +143,7 @@ OAuth.revokeToken()
 
 #### OAuthTokenProvider
 
-`OAuthTokenProvider` uses [angular-cookies](https://github.com/angular/bower-angular-cookies) to store the cookies. Check the [available options](https://code.angularjs.org/1.4.0/docs/api/ngCookies/service/$cookies).
+`OAuthTokenProvider` uses window.localStorage to store the data.
 
 Configuration defaults:
 
@@ -161,7 +159,7 @@ OAuthTokenProvider.configure({
 #### OAuthToken
 
 If you want to manage the `token` yourself you can use `OAuthToken` service.
-Please check the [OAuthToken](https://github.com/seegno/angular-oauth2/blob/master/src/providers/oauth-token-provider.js#L45) source code to see all the available methods.
+Please check the [OAuthToken](https://github.com/MHaendel/angular-oauth2/blob/master/src/providers/oauth-token-provider.js#L45) source code to see all the available methods.
 
 ## Contributing & Development
 
@@ -179,7 +177,7 @@ It will be awesome if you can help us evolve `angular-oauth2draft22`. Want to he
 4. Do your magic.
 5. Run the tests: `gulp test`.
 6. Build: `gulp build`
-7. Create a [Pull Request](https://github.com/seegno/angular-oauth2/compare).
+7. Create a [Pull Request](https://github.com/MHaendel/angular-oauth2/compare).
 
 *The source files are written in ES6.*
 
